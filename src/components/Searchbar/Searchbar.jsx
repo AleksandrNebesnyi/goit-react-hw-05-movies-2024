@@ -29,7 +29,7 @@ export const Searchbar = ({ submit }) => {
             autoComplete="off"
             value={query}
             autoFocus
-            placeholder="Search images and photos"
+            placeholder="Search movie"
           />
           <button type="submit" className={css.SearchFormButton}>
             <GoSearch className={css.icon} size="24" color="red" />

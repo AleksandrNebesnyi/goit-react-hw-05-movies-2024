@@ -1,0 +1,48 @@
+.List {
+    display: flex;
+  flex-direction: column;
+  padding: 0;
+  padding-left: 5px;
+}
+.Item {
+    display: block;
+  background: rgb(240, 240, 240);
+  padding: 5px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.Wrapper{
+    display: flex;
+}
+.Description{
+    padding-top: 10px;
+    margin-left: 10px;
+}
+.Lebel {
+    padding-right: 10px;
+    font-weight: 700;
+}
+/* export const List = styled.ul`
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  padding-left: 5px;
+`;
+export const Item = styled.li`
+  display: block;
+  background: rgb(240, 240, 240);
+  padding: 5px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+`;
+export const Wrapper = styled.div`
+  display: flex;
+`;
+export const Description = styled.p`
+  padding-top: 10px;
+  margin-left: 10px;
+`;
+export const Lebel = styled.span`
+  padding-right: 10px;
+  font-weight: 700;
+`; */

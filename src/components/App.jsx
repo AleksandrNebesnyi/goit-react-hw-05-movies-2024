@@ -1,82 +1,38 @@
-import { useState, useEffect } from 'react';
-import Notiflix from 'notiflix';
-import css from './App.module.css';
-import { Searchbar } from './Searchbar/Searchbar';
-import { ImageGallery } from './ImageGallery/ImageGallery';
-import { Button } from './Button/Button';
+import { Routes, Route } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { MainContainer } from './MainContainer/MainContainer';
+import { AppBar } from './AppBar/AppBar';
 import { Loader } from './Loader/Loader';
-import { Modal } from './Modal/Modal';
-import { getImage } from '../components/api/api-servis';
+// import { Home } from '../Pages/Home/Home';
+// import { MoviesList } from 'Pages/MoviesList/MoviesList';
+// import { MovieDetails } from 'Pages/MovieDetails/MovieDetails';
+// import { Cast } from './Cast/Cast';
+// import { Reviews } from './Reviews/Reviews';
+// import { NotFound } from 'Pages/NotFound/NotFound';
+
+const Home = lazy(() => import('Pages/Home/Home'));
+const MoviesList = lazy(() => import('Pages/MoviesList/MoviesList'));
+const MovieDetails = lazy(() => import('Pages/MovieDetails/MovieDetails'));
+const Cast = lazy(() => import('./Cast/Cast'));
+const Reviews = lazy(() => import('./Reviews/Reviews'));
+const NotFound = lazy(() => import('Pages/NotFound/NotFound'));
 
 export const App = () => {
-  const [images, setImages] = useState([]);
-  const [page, setPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [largeImage, setLargeImage] = useState('');
-
-  useEffect(() => {
-    if (!searchQuery) return;
-
-    const fetchImages = () => {
-      setIsLoading(true);
-      getImage(searchQuery, page)
-        .then(data => {
-          setImages(prevState => [...prevState, ...data]);
-        })
-        .catch(error => {
-          setError(error.message);
-          Notiflix.Notify.failure('Something is wrong try again');
-        })
-
-        .finally(() => setIsLoading(false));
-    };
-
-    fetchImages();
-    if (page !== 1) {
-      scrollOnLoadButton();
-    }
-  }, [page, searchQuery]);
-
-  const onChangeQuery = query => {
-    setImages([]);
-    setPage(1);
-    setSearchQuery(query);
-    setError(null);
-    setIsLoading(false);
-  };
-
-  const handleClick = () => {
-    setPage(page => page + 1);
-  };
-
-  const toggleModal = () => {
-    setShowModal(!showModal);
-    setLargeImage('');
-  };
-  const handleImageClick = largeImgUrl => {
-    setShowModal(true);
-    setLargeImage(largeImgUrl);
-  };
-  //  Скролл при клике на кнопку
-  const scrollOnLoadButton = () => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'smooth',
-    });
-  };
-  const shouldRenderLoadMoreButton = images.length >= 12 && !isLoading;
   return (
-    <div className={css.container}>
-      <Searchbar submit={onChangeQuery} />
-      {isLoading && <Loader height="150" width="150" />}
-      {images && (
-        <ImageGallery items={images} onImageClick={handleImageClick} />
-      )}
-      {shouldRenderLoadMoreButton && <Button onBtnClick={handleClick} />}
-      {showModal && <Modal onClose={toggleModal} url={largeImage}></Modal>}
-    </div>
+    <MainContainer>
+      <AppBar />
+
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="movies" element={<MoviesList />} />
+          <Route path="movies/:id" element={<MovieDetails />}>
+            <Route path="cast" element={<Cast />} />
+            <Route path="reviews" element={<Reviews />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </MainContainer>
   );
 };
